@@ -107,7 +107,8 @@ namespace APIConsumer
             // 
             // ProductGrid
             // 
-            this.ProductGrid.AllowUserToOrderColumns = true;
+            this.ProductGrid.AllowUserToAddRows = false;
+            this.ProductGrid.AllowUserToDeleteRows = false;
             this.ProductGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -128,15 +129,16 @@ namespace APIConsumer
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.ProductGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this.ProductGrid.GridColor = System.Drawing.SystemColors.ControlText;
             this.ProductGrid.Location = new System.Drawing.Point(44, 41);
             this.ProductGrid.MaximumSize = new System.Drawing.Size(450, 0);
             this.ProductGrid.MinimumSize = new System.Drawing.Size(450, 315);
             this.ProductGrid.MultiSelect = false;
             this.ProductGrid.Name = "ProductGrid";
+            this.ProductGrid.ReadOnly = true;
             this.ProductGrid.RowTemplate.Height = 25;
             this.ProductGrid.Size = new System.Drawing.Size(450, 315);
             this.ProductGrid.TabIndex = 7;
-            this.ProductGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProductGrid_CellContentClick);
             // 
             // AddButton
             // 
@@ -152,6 +154,7 @@ namespace APIConsumer
             // 
             // GetIdButton
             // 
+            this.GetIdButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GetIdButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.GetIdButton.Location = new System.Drawing.Point(559, 307);
             this.GetIdButton.Name = "GetIdButton";

@@ -109,15 +109,10 @@ namespace APIConsumer
 
         private void GetButton_Click(object sender, EventArgs e)
         {
-
+            GetProductListAsync();
         }
 
         private void GetSorted_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ProductGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
