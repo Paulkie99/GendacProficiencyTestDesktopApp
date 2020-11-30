@@ -6,9 +6,10 @@ namespace APIConsumer
 {
     public enum ProductCategory
     {
-        CategoryA,
+        CategoryA = 1,
         CategoryB,
-        CategoryC
+        CategoryC,
+        Invalid
     };
 
     public class Product
@@ -17,5 +18,13 @@ namespace APIConsumer
         public string Name { get; set; }
         public ProductCategory Category { get; set; }
         public float Price { get; set; }
+
+        public Product(int Id, string Name, ProductCategory Category, float Price)
+        {
+            this.Id = Id;
+            this.Name = Name;
+            this.Category = Category;
+            this.Price = Price;
+        }
     }
 }

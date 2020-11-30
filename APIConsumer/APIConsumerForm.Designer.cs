@@ -31,168 +31,163 @@ namespace APIConsumer
         /// </summary>
         /// 
 
-        private void InitializeConsumer(Uri uri)
-        {
-            this.consumer.BaseAddress = uri;
-            this.consumer.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.ProductListLabel = new System.Windows.Forms.Label();
-            this.ProductListBox = new System.Windows.Forms.ListBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.PriceLabel = new System.Windows.Forms.Label();
-            this.CategoryLabel = new System.Windows.Forms.Label();
-            this.NameLabel = new System.Windows.Forms.Label();
-            this.IdLabel = new System.Windows.Forms.Label();
+            this.DeleteButton = new System.Windows.Forms.Button();
             this.EditButton = new System.Windows.Forms.Button();
-            this.PriceTextBox = new System.Windows.Forms.TextBox();
-            this.CategoryTextBox = new System.Windows.Forms.TextBox();
-            this.NameTextBox = new System.Windows.Forms.TextBox();
-            this.IdTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox1.SuspendLayout();
+            this.GetButton = new System.Windows.Forms.Button();
+            this.GetSorted = new System.Windows.Forms.Button();
+            this.ProductGrid = new System.Windows.Forms.DataGridView();
+            this.AddButton = new System.Windows.Forms.Button();
+            this.GetIdButton = new System.Windows.Forms.Button();
+            this.CountLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // ProductListLabel
             // 
-            this.ProductListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.ProductListLabel.AutoSize = true;
-            this.ProductListLabel.Location = new System.Drawing.Point(162, 23);
+            this.ProductListLabel.Location = new System.Drawing.Point(207, 23);
             this.ProductListLabel.Name = "ProductListLabel";
-            this.ProductListLabel.Size = new System.Drawing.Size(70, 15);
+            this.ProductListLabel.Size = new System.Drawing.Size(73, 15);
             this.ProductListLabel.TabIndex = 0;
-            this.ProductListLabel.Text = "Product List";
+            this.ProductListLabel.Text = "Product List:";
             // 
-            // ProductListBox
+            // DeleteButton
             // 
-            this.ProductListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProductListBox.FormattingEnabled = true;
-            this.ProductListBox.ItemHeight = 15;
-            this.ProductListBox.Location = new System.Drawing.Point(8, 41);
-            this.ProductListBox.Name = "ProductListBox";
-            this.ProductListBox.Size = new System.Drawing.Size(370, 394);
-            this.ProductListBox.Sorted = true;
-            this.ProductListBox.TabIndex = 1;
-            this.ProductListBox.SelectedIndexChanged += new System.EventHandler(this.ProductListBox_SelectedIndexChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.PriceLabel);
-            this.groupBox1.Controls.Add(this.CategoryLabel);
-            this.groupBox1.Controls.Add(this.NameLabel);
-            this.groupBox1.Controls.Add(this.IdLabel);
-            this.groupBox1.Controls.Add(this.EditButton);
-            this.groupBox1.Controls.Add(this.PriceTextBox);
-            this.groupBox1.Controls.Add(this.CategoryTextBox);
-            this.groupBox1.Controls.Add(this.NameTextBox);
-            this.groupBox1.Controls.Add(this.IdTextBox);
-            this.groupBox1.Location = new System.Drawing.Point(424, 41);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(327, 321);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Product Details";
-            // 
-            // PriceLabel
-            // 
-            this.PriceLabel.AutoSize = true;
-            this.PriceLabel.Location = new System.Drawing.Point(39, 203);
-            this.PriceLabel.Name = "PriceLabel";
-            this.PriceLabel.Size = new System.Drawing.Size(33, 15);
-            this.PriceLabel.TabIndex = 8;
-            this.PriceLabel.Text = "Price";
-            // 
-            // CategoryLabel
-            // 
-            this.CategoryLabel.AutoSize = true;
-            this.CategoryLabel.Location = new System.Drawing.Point(39, 149);
-            this.CategoryLabel.Name = "CategoryLabel";
-            this.CategoryLabel.Size = new System.Drawing.Size(55, 15);
-            this.CategoryLabel.TabIndex = 7;
-            this.CategoryLabel.Text = "Category";
-            // 
-            // NameLabel
-            // 
-            this.NameLabel.AutoSize = true;
-            this.NameLabel.Location = new System.Drawing.Point(39, 95);
-            this.NameLabel.Name = "NameLabel";
-            this.NameLabel.Size = new System.Drawing.Size(39, 15);
-            this.NameLabel.TabIndex = 6;
-            this.NameLabel.Text = "Name";
-            // 
-            // IdLabel
-            // 
-            this.IdLabel.AutoSize = true;
-            this.IdLabel.Location = new System.Drawing.Point(39, 41);
-            this.IdLabel.Name = "IdLabel";
-            this.IdLabel.Size = new System.Drawing.Size(17, 15);
-            this.IdLabel.TabIndex = 5;
-            this.IdLabel.Text = "Id";
+            this.DeleteButton.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DeleteButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.DeleteButton.Location = new System.Drawing.Point(570, 129);
+            this.DeleteButton.Name = "DeleteButton";
+            this.DeleteButton.Size = new System.Drawing.Size(92, 38);
+            this.DeleteButton.TabIndex = 9;
+            this.DeleteButton.Text = "Delete";
+            this.DeleteButton.UseVisualStyleBackColor = false;
+            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
             // 
             // EditButton
             // 
             this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EditButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.EditButton.Location = new System.Drawing.Point(218, 266);
+            this.EditButton.Location = new System.Drawing.Point(570, 85);
             this.EditButton.Name = "EditButton";
-            this.EditButton.Size = new System.Drawing.Size(85, 38);
+            this.EditButton.Size = new System.Drawing.Size(92, 38);
             this.EditButton.TabIndex = 4;
             this.EditButton.Text = "Edit...";
             this.EditButton.UseVisualStyleBackColor = false;
             this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
             // 
-            // PriceTextBox
+            // GetButton
             // 
-            this.PriceTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.PriceTextBox.Location = new System.Drawing.Point(107, 203);
-            this.PriceTextBox.Name = "PriceTextBox";
-            this.PriceTextBox.Size = new System.Drawing.Size(100, 23);
-            this.PriceTextBox.TabIndex = 3;
+            this.GetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GetButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.GetButton.Location = new System.Drawing.Point(559, 173);
+            this.GetButton.Name = "GetButton";
+            this.GetButton.Size = new System.Drawing.Size(112, 49);
+            this.GetButton.TabIndex = 5;
+            this.GetButton.Text = "Get Unordered List";
+            this.GetButton.UseVisualStyleBackColor = false;
+            this.GetButton.Click += new System.EventHandler(this.GetButton_Click);
             // 
-            // CategoryTextBox
+            // GetSorted
             // 
-            this.CategoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CategoryTextBox.Location = new System.Drawing.Point(107, 149);
-            this.CategoryTextBox.Name = "CategoryTextBox";
-            this.CategoryTextBox.Size = new System.Drawing.Size(100, 23);
-            this.CategoryTextBox.TabIndex = 2;
+            this.GetSorted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GetSorted.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.GetSorted.Location = new System.Drawing.Point(559, 228);
+            this.GetSorted.Name = "GetSorted";
+            this.GetSorted.Size = new System.Drawing.Size(112, 73);
+            this.GetSorted.TabIndex = 6;
+            this.GetSorted.Text = "Get Paged, Sorted, Filtered List";
+            this.GetSorted.UseVisualStyleBackColor = false;
+            this.GetSorted.Click += new System.EventHandler(this.GetSorted_Click);
             // 
-            // NameTextBox
+            // ProductGrid
             // 
-            this.NameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.NameTextBox.Location = new System.Drawing.Point(107, 95);
-            this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(100, 23);
-            this.NameTextBox.TabIndex = 1;
+            this.ProductGrid.AllowUserToOrderColumns = true;
+            this.ProductGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProductGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.ProductGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ControlDark;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.ProductGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this.ProductGrid.Location = new System.Drawing.Point(44, 41);
+            this.ProductGrid.MaximumSize = new System.Drawing.Size(450, 0);
+            this.ProductGrid.MinimumSize = new System.Drawing.Size(450, 315);
+            this.ProductGrid.MultiSelect = false;
+            this.ProductGrid.Name = "ProductGrid";
+            this.ProductGrid.RowTemplate.Height = 25;
+            this.ProductGrid.Size = new System.Drawing.Size(450, 315);
+            this.ProductGrid.TabIndex = 7;
+            this.ProductGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProductGrid_CellContentClick);
             // 
-            // IdTextBox
+            // AddButton
             // 
-            this.IdTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.IdTextBox.Location = new System.Drawing.Point(107, 41);
-            this.IdTextBox.Name = "IdTextBox";
-            this.IdTextBox.Size = new System.Drawing.Size(100, 23);
-            this.IdTextBox.TabIndex = 0;
+            this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.AddButton.Location = new System.Drawing.Point(570, 41);
+            this.AddButton.Name = "AddButton";
+            this.AddButton.Size = new System.Drawing.Size(92, 39);
+            this.AddButton.TabIndex = 10;
+            this.AddButton.Text = "Add";
+            this.AddButton.UseVisualStyleBackColor = false;
+            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
+            // 
+            // GetIdButton
+            // 
+            this.GetIdButton.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.GetIdButton.Location = new System.Drawing.Point(559, 307);
+            this.GetIdButton.Name = "GetIdButton";
+            this.GetIdButton.Size = new System.Drawing.Size(112, 49);
+            this.GetIdButton.TabIndex = 11;
+            this.GetIdButton.Text = "Get by Id";
+            this.GetIdButton.UseVisualStyleBackColor = false;
+            this.GetIdButton.Click += new System.EventHandler(this.GetIdButton_Click);
+            // 
+            // CountLabel
+            // 
+            this.CountLabel.AutoSize = true;
+            this.CountLabel.Location = new System.Drawing.Point(283, 23);
+            this.CountLabel.Name = "CountLabel";
+            this.CountLabel.Size = new System.Drawing.Size(0, 15);
+            this.CountLabel.TabIndex = 12;
             // 
             // APIConsumerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.ProductListBox);
+            this.ClientSize = new System.Drawing.Size(717, 375);
+            this.Controls.Add(this.CountLabel);
+            this.Controls.Add(this.GetIdButton);
+            this.Controls.Add(this.AddButton);
+            this.Controls.Add(this.DeleteButton);
+            this.Controls.Add(this.ProductGrid);
+            this.Controls.Add(this.GetSorted);
+            this.Controls.Add(this.GetButton);
+            this.Controls.Add(this.EditButton);
             this.Controls.Add(this.ProductListLabel);
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "APIConsumerForm";
             this.Text = "Gendac Software Engineering API Consumer";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -201,21 +196,14 @@ namespace APIConsumer
         #endregion
 
         private System.Windows.Forms.Label ProductListLabel;
-        private System.Windows.Forms.ListBox ProductListBox;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label PriceLabel;
-        private System.Windows.Forms.Label CategoryLabel;
-        private System.Windows.Forms.Label NameLabel;
-        private System.Windows.Forms.Label IdLabel;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox IdTextBox;
-        private System.Windows.Forms.TextBox NameTextBox;
-        private System.Windows.Forms.TextBox CategoryTextBox;
-        private System.Windows.Forms.TextBox PriceTextBox;
         private System.Windows.Forms.Button EditButton;
+        private System.Windows.Forms.Button DeleteButton;
+        private System.Windows.Forms.Button GetButton;
+        private System.Windows.Forms.Button GetSorted;
+        private System.Windows.Forms.DataGridView ProductGrid;
+        private System.Windows.Forms.Button AddButton;
+        private System.Windows.Forms.Button GetIdButton;
+        private System.Windows.Forms.Label CountLabel;
     }
 }
 
