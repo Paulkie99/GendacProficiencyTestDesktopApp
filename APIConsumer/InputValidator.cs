@@ -17,12 +17,17 @@ namespace APIConsumer
             if (id < 0)
                 return false;
 
+            return !IsIdExists(id);
+        }
+
+        public bool IsIdExists(int id)
+        {
             Product product;
             parent.ProductIdDict.TryGetValue(id, out product);
             if (product != null)
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
         
         public bool IsValidName(string name)

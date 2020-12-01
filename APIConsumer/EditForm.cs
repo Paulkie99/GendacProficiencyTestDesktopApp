@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
 namespace APIConsumer
 {
-    public partial class AddProductForm : Form
+    public class EditForm : AddProductForm
     {
-        protected APIConsumerForm parent;
-
-        public AddProductForm(APIConsumerForm parent)
+        public EditForm(APIConsumerForm parent) : base(parent)
         {
-            InitializeComponent();
-            this.parent = parent;
+            this.Text = "Edit Form";
+            this.IdTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Id"].Value.ToString();
+            this.IdTB.Enabled = false;
+            this.NameTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Name"].Value.ToString();
+            this.CatCB.SelectedIndex = CatCB.FindStringExact(parent.ProductGrid.SelectedRows[0].Cells["Category"].Value.ToString());
+            this.PriceTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Price"].Value.ToString();
         }
-
-        protected virtual void OKButton_Click(object sender, EventArgs e)
+        protected override void OKButton_Click(object sender, EventArgs e)
         {
             int id;
             if (!int.TryParse(IdTB.Text, out id))
@@ -26,9 +24,9 @@ namespace APIConsumer
                 MessageBox.Show("Cannot parse id as integer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (!parent.consumer.validator.IsValidId(id))
+            else if (!parent.consumer.validator.IsIdExists(id))
             {
-                MessageBox.Show("Id already exists or is less than zero", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Id does not exist", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -61,7 +59,7 @@ namespace APIConsumer
             }
 
             Product addProduct = new Product(id, name, (ProductCategory)category, price);
-            parent.consumer.PostAsync(addProduct);
+            parent.consumer.PutAsync(addProduct, this.parent.ProductGrid.SelectedRows[0].Index);
             this.Dispose();
         }
     }

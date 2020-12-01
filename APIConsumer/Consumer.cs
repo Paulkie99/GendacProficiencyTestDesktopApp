@@ -116,6 +116,7 @@ namespace APIConsumer
             {
                 MessageBox.Show("Product Added Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 AddProductToDatastructures(addProduct);
+                GetProductListAsync("");
             }
 
         }
@@ -152,6 +153,51 @@ namespace APIConsumer
             }
 
             EnableUI();
+        }
+
+        public async Task PutAsync(Product addProduct, int rowIndex)
+        {
+            StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> GetResponse = client.PutAsync(addProduct.Id.ToString(), content);
+            HttpResponseMessage GetResponseResult = new HttpResponseMessage();
+            try
+            {
+                GetResponseResult = await GetResponse;
+                GetResponseResult.EnsureSuccessStatusCode();
+            }
+            catch
+            {
+                //response error 
+
+                if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    MessageBox.Show("Product Properties Invalid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.Conflict)
+                {
+                    MessageBox.Show("Duplicate Product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if(GetResponseResult.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    MessageBox.Show("Id does not exist", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Unknown Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            if (GetResponseResult.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Product Edited Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UpdateProductToDatastructures(rowIndex, addProduct);
+            }
+        }
+
+        private void UpdateProductToDatastructures(int gridIndex, Product addProduct)
+        {
+            DeleteProductFromDatastructures(gridIndex);
+            AddProductToDatastructures(addProduct);
         }
 
         private void DeleteProductFromDatastructures(int gridIndex)

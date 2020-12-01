@@ -18,6 +18,11 @@ namespace APIConsumer
             OnPropertyChanged("Count");
         }
 
+        private void SelectedRowChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+
+        }
+
         public int Count
         {
             get

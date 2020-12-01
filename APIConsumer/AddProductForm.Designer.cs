@@ -56,26 +56,26 @@ namespace APIConsumer
             this.PriceTB.Location = new System.Drawing.Point(122, 187);
             this.PriceTB.Name = "PriceTB";
             this.PriceTB.Size = new System.Drawing.Size(100, 23);
-            this.PriceTB.TabIndex = 1;
+            this.PriceTB.TabIndex = 3;
             // 
             // NameTB
             // 
             this.NameTB.Location = new System.Drawing.Point(122, 78);
             this.NameTB.Name = "NameTB";
             this.NameTB.Size = new System.Drawing.Size(100, 23);
-            this.NameTB.TabIndex = 2;
+            this.NameTB.TabIndex = 1;
             // 
             // CatCB
             // 
-            this.CatCB.DataSource = new APIConsumer.ProductCategory[] {
+            this.CatCB.FormattingEnabled = true;
+            this.CatCB.Items.AddRange(new object[] {
             APIConsumer.ProductCategory.CategoryA,
             APIConsumer.ProductCategory.CategoryB,
-            APIConsumer.ProductCategory.CategoryC};
-            this.CatCB.FormattingEnabled = true;
+            APIConsumer.ProductCategory.CategoryC});
             this.CatCB.Location = new System.Drawing.Point(122, 134);
             this.CatCB.Name = "CatCB";
             this.CatCB.Size = new System.Drawing.Size(100, 23);
-            this.CatCB.TabIndex = 3;
+            this.CatCB.TabIndex = 2;
             // 
             // IdLabel
             // 
@@ -118,15 +118,15 @@ namespace APIConsumer
             this.OKButton.Location = new System.Drawing.Point(138, 299);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(71, 40);
-            this.OKButton.TabIndex = 8;
+            this.OKButton.TabIndex = 4;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
             // 
             // ProductDetailsGroup
             // 
-            this.ProductDetailsGroup.Controls.Add(this.IdLabel);
             this.ProductDetailsGroup.Controls.Add(this.IdTB);
+            this.ProductDetailsGroup.Controls.Add(this.IdLabel);
             this.ProductDetailsGroup.Controls.Add(this.PriceLabel);
             this.ProductDetailsGroup.Controls.Add(this.PriceTB);
             this.ProductDetailsGroup.Controls.Add(this.CategoryLabel);
@@ -136,7 +136,7 @@ namespace APIConsumer
             this.ProductDetailsGroup.Location = new System.Drawing.Point(40, 51);
             this.ProductDetailsGroup.Name = "ProductDetailsGroup";
             this.ProductDetailsGroup.Size = new System.Drawing.Size(271, 228);
-            this.ProductDetailsGroup.TabIndex = 9;
+            this.ProductDetailsGroup.TabIndex = 0;
             this.ProductDetailsGroup.TabStop = false;
             this.ProductDetailsGroup.Text = "Product Details";
             // 
@@ -144,7 +144,7 @@ namespace APIConsumer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(346, 368);
+            this.ClientSize = new System.Drawing.Size(351, 375);
             this.Controls.Add(this.ProductDetailsGroup);
             this.Controls.Add(this.OKButton);
             this.MinimumSize = new System.Drawing.Size(360, 400);
@@ -162,10 +162,10 @@ namespace APIConsumer
         private System.Windows.Forms.Label NameLabel;
         private System.Windows.Forms.Label CategoryLabel;
         private System.Windows.Forms.Label PriceLabel;
-        private System.Windows.Forms.TextBox IdTB;
-        private System.Windows.Forms.TextBox NameTB;
-        private System.Windows.Forms.ComboBox CatCB;
-        private System.Windows.Forms.TextBox PriceTB;
+        protected System.Windows.Forms.TextBox IdTB;
+        protected System.Windows.Forms.TextBox NameTB;
+        protected System.Windows.Forms.ComboBox CatCB;
+        protected System.Windows.Forms.TextBox PriceTB;
         private System.Windows.Forms.GroupBox ProductDetailsGroup;
         private System.Windows.Forms.Button OKButton;
     }

@@ -23,7 +23,8 @@ namespace APIConsumer
 
         private void EditButton_Click(object sender, EventArgs e)
         {
-
+            EditForm editForm = new EditForm(this);
+            editForm.ShowDialog();
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)

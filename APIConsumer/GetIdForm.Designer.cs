@@ -39,7 +39,7 @@ namespace APIConsumer
             this.OKButton.Location = new System.Drawing.Point(73, 69);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
-            this.OKButton.TabIndex = 0;
+            this.OKButton.TabIndex = 1;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -49,7 +49,7 @@ namespace APIConsumer
             this.IdTextBox.Location = new System.Drawing.Point(61, 26);
             this.IdTextBox.Name = "IdTextBox";
             this.IdTextBox.Size = new System.Drawing.Size(100, 23);
-            this.IdTextBox.TabIndex = 1;
+            this.IdTextBox.TabIndex = 0;
             // 
             // IdLabel
             // 
@@ -65,8 +65,8 @@ namespace APIConsumer
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(225, 104);
-            this.Controls.Add(this.IdLabel);
             this.Controls.Add(this.IdTextBox);
+            this.Controls.Add(this.IdLabel);
             this.Controls.Add(this.OKButton);
             this.MinimumSize = new System.Drawing.Size(240, 140);
             this.Name = "GetIdForm";

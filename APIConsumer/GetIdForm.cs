@@ -14,6 +14,7 @@ namespace APIConsumer
         public GetIdForm(APIConsumerForm parent)
         {
             InitializeComponent();
+            IdTextBox.KeyPress += CheckEnterKeyPress;
             this.parent = parent;
         }
 
