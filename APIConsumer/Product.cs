@@ -9,7 +9,6 @@ namespace APIConsumer
         CategoryA = 1,
         CategoryB,
         CategoryC,
-        Invalid
     };
 
     public class Product

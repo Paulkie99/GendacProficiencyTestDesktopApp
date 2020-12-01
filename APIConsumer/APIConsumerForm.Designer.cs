@@ -137,6 +137,7 @@ namespace APIConsumer
             this.ProductGrid.Name = "ProductGrid";
             this.ProductGrid.ReadOnly = true;
             this.ProductGrid.RowTemplate.Height = 25;
+            this.ProductGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.ProductGrid.Size = new System.Drawing.Size(450, 315);
             this.ProductGrid.TabIndex = 7;
             // 
@@ -203,10 +204,10 @@ namespace APIConsumer
         private System.Windows.Forms.Button DeleteButton;
         private System.Windows.Forms.Button GetButton;
         private System.Windows.Forms.Button GetSorted;
-        private System.Windows.Forms.DataGridView ProductGrid;
+        public System.Windows.Forms.DataGridView ProductGrid;
         private System.Windows.Forms.Button AddButton;
         private System.Windows.Forms.Button GetIdButton;
-        private System.Windows.Forms.Label CountLabel;
+        public System.Windows.Forms.Label CountLabel;
     }
 }
 
