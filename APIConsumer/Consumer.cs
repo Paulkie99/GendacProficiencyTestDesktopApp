@@ -83,25 +83,11 @@ namespace APIConsumer
 
             EnableUI();
         }
-
-        private void BindSources()
-        {
-            //Bind grid to product list
-            Form.ProductGrid.AutoGenerateColumns = true;
-            var bindingList = new BindingList<Product>(ProductList);
-            var source = new BindingSource(bindingList, null);
-            Form.ProductGrid.DataSource = source;
-
-            //Bind count label to grid row count
-            Binding countBinding = new Binding("Text", new DataGridRowCountBindingHelper(Form.ProductGrid), "Count", true);
-            countBinding.Format += (sender, e) => e.Value = string.Format("{0}", e.Value);
-            Form.CountLabel.DataBindings.Clear(); //avoid adding the same binding twice if the label text has been bound before
-            Form.CountLabel.DataBindings.Add(countBinding);
-        }
-
+        
         public async Task PostAsync(Product addProduct)
         {
-            Task<HttpResponseMessage> GetResponse = client.PostAsync("", new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json"));
+            StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
+            Task<HttpResponseMessage> GetResponse = client.PostAsync("", content);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
             try
             {
@@ -133,6 +119,63 @@ namespace APIConsumer
             }
 
         }
+
+        public async Task DeleteAsync(string method, int rowIndex)
+        {
+            DisableUI();
+
+            Task<HttpResponseMessage> GetResponse = client.DeleteAsync(method);
+            HttpResponseMessage GetResponseResult = new HttpResponseMessage();
+            try
+            {
+                GetResponseResult = await GetResponse;
+                GetResponseResult.EnsureSuccessStatusCode();
+            }
+            catch
+            {
+                //response error 
+
+                if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    MessageBox.Show("Id does not exist", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Unknown Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            if (GetResponseResult.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Product Deleted Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DeleteProductFromDatastructures(rowIndex);
+            }
+
+            EnableUI();
+        }
+
+        private void DeleteProductFromDatastructures(int gridIndex)
+        {
+            ProductNameDict.Remove(Form.ProductGrid.Rows[gridIndex].Cells["Name"].Value.ToString());
+            ProductIdDict.Remove((int) Form.ProductGrid.Rows[gridIndex].Cells["Id"].Value);
+            Form.ProductGrid.Rows.RemoveAt(gridIndex);
+        }
+
+        private void BindSources()
+        {
+            //Bind grid to product list
+            Form.ProductGrid.AutoGenerateColumns = true;
+            var bindingList = new BindingList<Product>(ProductList);
+            var source = new BindingSource(bindingList, null);
+            Form.ProductGrid.DataSource = source;
+
+            //Bind count label to grid row count
+            Binding countBinding = new Binding("Text", new DataGridRowCountBindingHelper(Form.ProductGrid), "Count", true);
+            countBinding.Format += (sender, e) => e.Value = string.Format("{0} items", e.Value);
+            Form.CountLabel.DataBindings.Clear(); //avoid adding the same binding twice if the label text has been bound before
+            Form.CountLabel.DataBindings.Add(countBinding);
+        }
+
 
         private void AddProductToDatastructures(Product addProduct)
         {

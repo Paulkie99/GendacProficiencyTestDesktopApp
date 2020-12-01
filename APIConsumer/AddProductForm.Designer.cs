@@ -67,12 +67,15 @@ namespace APIConsumer
             // 
             // CatCB
             // 
+            this.CatCB.DataSource = new APIConsumer.ProductCategory[] {
+            APIConsumer.ProductCategory.CategoryA,
+            APIConsumer.ProductCategory.CategoryB,
+            APIConsumer.ProductCategory.CategoryC};
             this.CatCB.FormattingEnabled = true;
             this.CatCB.Location = new System.Drawing.Point(122, 134);
             this.CatCB.Name = "CatCB";
             this.CatCB.Size = new System.Drawing.Size(100, 23);
             this.CatCB.TabIndex = 3;
-            this.CatCB.DataSource = Enum.GetValues(typeof(ProductCategory));
             // 
             // IdLabel
             // 
@@ -144,6 +147,7 @@ namespace APIConsumer
             this.ClientSize = new System.Drawing.Size(346, 368);
             this.Controls.Add(this.ProductDetailsGroup);
             this.Controls.Add(this.OKButton);
+            this.MinimumSize = new System.Drawing.Size(360, 400);
             this.Name = "AddProductForm";
             this.Text = "AddProductForm";
             this.ProductDetailsGroup.ResumeLayout(false);

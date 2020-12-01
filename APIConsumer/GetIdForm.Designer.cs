@@ -50,7 +50,6 @@ namespace APIConsumer
             this.IdTextBox.Name = "IdTextBox";
             this.IdTextBox.Size = new System.Drawing.Size(100, 23);
             this.IdTextBox.TabIndex = 1;
-            this.IdTextBox.KeyPress += CheckEnterKeyPress;
             // 
             // IdLabel
             // 
@@ -69,6 +68,7 @@ namespace APIConsumer
             this.Controls.Add(this.IdLabel);
             this.Controls.Add(this.IdTextBox);
             this.Controls.Add(this.OKButton);
+            this.MinimumSize = new System.Drawing.Size(240, 140);
             this.Name = "GetIdForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GetIdForm";

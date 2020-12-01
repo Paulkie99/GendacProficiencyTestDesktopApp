@@ -32,9 +32,7 @@ namespace APIConsumer
             {
                 if (row.Index >= 0)
                 {
-                    consumer.ProductNameDict.Remove(Convert.ToString(row.Cells["Name"].Value));
-                    consumer.ProductIdDict.Remove((int)row.Cells["Id"].Value);
-                    ProductGrid.Rows.RemoveAt(row.Index);
+                    consumer.DeleteAsync(((int) row.Cells[0].Value).ToString(), row.Index);
                 }
             }
         }
