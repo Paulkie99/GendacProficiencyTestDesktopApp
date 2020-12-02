@@ -19,7 +19,7 @@ namespace APIConsumer
             int id;
             if(int.TryParse(this.IdTextBox.Text, out id))
             {
-                parent.consumer.GetProductListAsync(id.ToString());
+                parent.consumer.GetAsync(id.ToString());
                 this.Dispose();
             }
             else

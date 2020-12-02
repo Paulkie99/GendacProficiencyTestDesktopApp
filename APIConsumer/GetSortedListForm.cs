@@ -49,7 +49,7 @@ namespace APIConsumer
             string methodString = "?page=" + page.ToString() + "&pageSize=" + pageSize.ToString() + "&orderBy=" + OrderBy
                                     + "&ascending=" + (ascending ? "true" : "false") + "&filter=" + Filter;
             
-            parent.consumer.GetProductListAsync(methodString, true);
+            parent.consumer.GetAsync(methodString, true);
             this.Dispose();
         }
     }

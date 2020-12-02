@@ -13,6 +13,8 @@ namespace APIConsumer
     // This class encapsulates all communication functions between the external API and the project
     public class Consumer
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger(); // log to Log.txt
+
         private HttpClient client = new HttpClient();
         private string endpoint = "http://gendacproficiencytest.azurewebsites.net/API/ProductsAPI/";
 
@@ -35,8 +37,10 @@ namespace APIConsumer
         }
 
         //Refresh the list of products by performing a new GET request, if 'method' is an Id (formatted as string), get a product with the given Id, otherwise if 'method' is empty retrieve a list of all products
-        public async Task GetProductListAsync(string method, bool isSorted = false)
+        public async Task GetAsync(string method, bool isSorted = false)
         {
+            Logger.Info("GET " + endpoint + method);
+
             DisableUI(); // Disable UI to avoid spamming Get requests (and to force the user to wait for a product list before attempting other operations)
 
             // Clear datastructures to ensure they all reflect the latest products obtained from the API
@@ -47,15 +51,16 @@ namespace APIConsumer
             Task<HttpResponseMessage> GetResponse = client.GetAsync(method);
             string JsonProducts = "";
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
-            try 
+            try
             {
                 GetResponseResult = await GetResponse; // Async tasks may throw exceptions
                 GetResponseResult.EnsureSuccessStatusCode(); // Throws exception if status code is not success
                 JsonProducts = await GetResponseResult.Content.ReadAsStringAsync(); // Async tasks may throw exceptions
             }
-            catch //Catch occurs if either the response status code is not successful, or the response content could not be read as string
+            catch (Exception e) //Catch occurs if either the response status code is not successful, or the response content could not be read as string
             {
                 //response error 
+                Logger.Error(e, "Exception caught in GetAsync function " + endpoint + method);
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -71,17 +76,25 @@ namespace APIConsumer
 
             if (JsonProducts != "") // Catch block did not execute, i.e. response status was successful and result could be read as string
             {
-                if(isSorted)
+                try
                 {
-                    GetSortedResponse response = JsonConvert.DeserializeObject<GetSortedResponse>(JsonProducts);
-                    ProductList = response.Results;
+                    if (isSorted)
+                    {
+                        GetSortedResponse response = JsonConvert.DeserializeObject<GetSortedResponse>(JsonProducts);
+                        ProductList = response.Results;
+                    }
+                    else if (method.Length == 0) // get list of all products
+                        ProductList = JsonConvert.DeserializeObject<List<Product>>(JsonProducts);
+                    else // get one product
+                        ProductList.Add(JsonConvert.DeserializeObject<Product>(JsonProducts));
                 }
-                else if (method.Length == 0) // get list of all products
-                    ProductList = JsonConvert.DeserializeObject<List<Product>>(JsonProducts);
-                else // get one product
-                    ProductList.Add(JsonConvert.DeserializeObject<Product>(JsonProducts));
+                catch(Exception e)
+                {
+                    MessageBox.Show("Could not interpret API result", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Logger.Error(e, " Exception caught during deserialization of " + JsonProducts);
+                }
 
-                foreach(Product product in ProductList)
+                foreach (Product product in ProductList)
                 {
                     ProductNameDict.Add(product.Name, product);
                     ProductIdDict.Add(product.Id, product);
@@ -89,6 +102,13 @@ namespace APIConsumer
 
                 //Bind products to grid
                 BindSources();
+
+                Logger.Info("GET " + endpoint + method + " executed successfully");
+            }
+            else
+            {
+                MessageBox.Show("Empty API result", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Warn("JsonConverter could not parse GET result or exception occurred " + endpoint + method);
             }
 
             EnableUI();
@@ -98,6 +118,9 @@ namespace APIConsumer
         public async Task PostAsync(Product addProduct)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
+            
+            Logger.Info("POST " + content.ToString());
+         
             Task<HttpResponseMessage> GetResponse = client.PostAsync("", content);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
             try
@@ -105,9 +128,10 @@ namespace APIConsumer
                 GetResponseResult = await GetResponse;
                 GetResponseResult.EnsureSuccessStatusCode();
             }
-            catch
+            catch(Exception e)
             {
                 //response error 
+                Logger.Error(e, "Exception caught in PostAsync function " + content.ToString());
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -125,9 +149,17 @@ namespace APIConsumer
 
             if(GetResponseResult.IsSuccessStatusCode)
             {
-                MessageBox.Show("Product Added Successfully, retrieving updated list...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Logger.Info("POST " + content.ToString() + " completed successfully");
+
+                MessageBox.Show("Product added successfully, retrieving updated list...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 AddProductToDatastructures(addProduct);
-                GetProductListAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
+                GetAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
+                // Open Issue: should the API be behaving in this way?
+            }
+            else
+            {
+                MessageBox.Show("Could not add product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Info("POST " + content.ToString() + " response status code is not successful");
             }
 
         }
@@ -135,7 +167,7 @@ namespace APIConsumer
         // Delete product with specified Id (method) at rowIndex in DataGrid
         public async Task DeleteAsync(string method, int rowIndex)
         {
-            //DisableUI();
+            Logger.Info("DELETE " + method);
 
             Task<HttpResponseMessage> GetResponse = client.DeleteAsync(method);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
@@ -144,9 +176,10 @@ namespace APIConsumer
                 GetResponseResult = await GetResponse;
                 GetResponseResult.EnsureSuccessStatusCode();
             }
-            catch
+            catch(Exception e)
             {
                 //response error 
+                Logger.Error(e, "Exception caught in DeleteAsync " + method);
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -160,17 +193,24 @@ namespace APIConsumer
 
             if (GetResponseResult.IsSuccessStatusCode)
             {
+                Logger.Info("DELETE " + method + " successful");
                 MessageBox.Show("Product Deleted Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DeleteProductFromDatastructures(rowIndex);
             }
-
-            //EnableUI();
+            else
+            {
+                MessageBox.Show("Could not delete product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Info("DELETE " + method + " response status code is not successful");
+            }
         }
 
         // Update product based on addProduct, at specified rowIndex in DataGrid
         public async Task PutAsync(Product addProduct, int rowIndex)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
+
+            Logger.Info("PUT " + content.ToString());
+
             Task<HttpResponseMessage> GetResponse = client.PutAsync(addProduct.Id.ToString(), content);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
             try
@@ -178,9 +218,10 @@ namespace APIConsumer
                 GetResponseResult = await GetResponse;
                 GetResponseResult.EnsureSuccessStatusCode();
             }
-            catch
+            catch(Exception e)
             {
                 //response error 
+                Logger.Error(e, "Exception caught during PutAsync " + content.ToString());
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -205,6 +246,11 @@ namespace APIConsumer
                 MessageBox.Show("Product Edited Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 UpdateProductToDatastructures(rowIndex, addProduct);
             }
+            else
+            {
+                MessageBox.Show("Could not edit product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Info("PUT " + content.ToString() + " response status code is not successful");
+            }
         }
 
         private void UpdateProductToDatastructures(int gridIndex, Product addProduct)
@@ -218,6 +264,7 @@ namespace APIConsumer
             ProductNameDict.Remove(Form.ProductGrid.Rows[gridIndex].Cells["Name"].Value.ToString());
             ProductIdDict.Remove((int) Form.ProductGrid.Rows[gridIndex].Cells["Id"].Value);
             Form.ProductGrid.Rows.RemoveAt(gridIndex);
+            Form.ProductGrid.Update();
         }
 
         private void BindSources()

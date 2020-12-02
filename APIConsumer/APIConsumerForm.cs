@@ -13,7 +13,7 @@ namespace APIConsumer
         {
             consumer = new Consumer(this);
             InitializeComponent();
-            consumer.GetProductListAsync(""); // get list of all products on startup
+            consumer.GetAsync(""); // get list of all products on startup
         }
 
         // Edit product of selected row
@@ -38,7 +38,7 @@ namespace APIConsumer
         // Get entire product list
         private void GetButton_Click(object sender, EventArgs e)
         {
-            consumer.GetProductListAsync("");
+            consumer.GetAsync("");
         }
 
         // Get sorted, filtered, ordered list

@@ -5,6 +5,8 @@ namespace APIConsumer
 {
     static class Program
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -14,7 +16,9 @@ namespace APIConsumer
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new APIConsumerForm());
+            try { Application.Run(new APIConsumerForm()); }
+            catch (Exception e) { Logger.Error(e, "Some Exception"); }
+            NLog.LogManager.Shutdown();
         }
     }
 }

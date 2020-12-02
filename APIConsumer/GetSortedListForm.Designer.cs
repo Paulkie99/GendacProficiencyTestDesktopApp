@@ -164,9 +164,6 @@ namespace APIConsumer
         private System.Windows.Forms.ComboBox OrderByCB;
         private System.Windows.Forms.CheckBox AscendingCheckBox;
         private System.Windows.Forms.TextBox FilterTB;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label FilterLabel;
         private System.Windows.Forms.Label PageLabel;
         private System.Windows.Forms.Label PageSizeLabel;
