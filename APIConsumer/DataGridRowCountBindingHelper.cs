@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace APIConsumer
 {
+    // Helper class to bind item count label to the number of rows in the DataGridView
     class DataGridRowCountBindingHelper : INotifyPropertyChanged
     {
         private DataGridView _view;

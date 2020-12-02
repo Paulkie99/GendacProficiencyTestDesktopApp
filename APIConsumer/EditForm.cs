@@ -5,13 +5,17 @@ using System.Windows.Forms;
 
 namespace APIConsumer
 {
+    // Form used to edit a product, inherits from AddProductForm since the controls are identical.
+    // Editform overrides OKButton_Click function to ensure product is edited ("PUT" instead of "POST")
     public class EditForm : AddProductForm
     {
         public EditForm(APIConsumerForm parent) : base(parent)
         {
-            this.Text = "Edit Form";
+            this.Text = "Edit Form"; // Change form title from "Add product form"
+
+            // Pre-populate fields with selected product properties
             this.IdTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Id"].Value.ToString();
-            this.IdTB.Enabled = false;
+            this.IdTB.Enabled = false; // Open issue: user should not be able to edit Id?
             this.NameTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Name"].Value.ToString();
             this.CatCB.SelectedIndex = CatCB.FindStringExact(parent.ProductGrid.SelectedRows[0].Cells["Category"].Value.ToString());
             this.PriceTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Price"].Value.ToString();
@@ -31,7 +35,7 @@ namespace APIConsumer
             }
 
             string name = NameTB.Text;
-            if (!parent.consumer.validator.IsValidName(name))
+            if (!parent.consumer.validator.IsValidName(name)) // Open issue: should name be allowed to be non-unique when editing?
             {
                 MessageBox.Show("Name is empty or already exists", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

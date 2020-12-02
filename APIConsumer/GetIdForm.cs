@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace APIConsumer
 {
+    // Form used to get product by Id
     public partial class GetIdForm : Form
     {
         private APIConsumerForm parent;

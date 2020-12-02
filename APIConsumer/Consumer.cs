@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,15 +10,20 @@ using System.Windows.Forms;
 
 namespace APIConsumer
 {
+    // This class encapsulates all communication functions between the external API and the project
     public class Consumer
     {
         private HttpClient client = new HttpClient();
         private string endpoint = "http://gendacproficiencytest.azurewebsites.net/API/ProductsAPI/";
-        private APIConsumerForm Form;
+
+        private APIConsumerForm Form; // The class requires a reference to the main form in order to manipulate the DataGridView
 
         public List<Product> ProductList = new List<Product>();
+
+        // Dictionaries are used to quickly determine whether a product with a given Name or Id exists
         public Dictionary<int, Product> ProductIdDict = new Dictionary<int, Product>();
         public Dictionary<string, Product> ProductNameDict = new Dictionary<string, Product>();
+
         public InputValidator validator;
 
         public Consumer(APIConsumerForm form)
@@ -27,28 +31,29 @@ namespace APIConsumer
             validator = new InputValidator(this);
             this.Form = form;
             client.BaseAddress = new Uri(endpoint);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Json-formatted responses and requests to be expected
         }
 
-        //Refresh the list of products by performing a new GET request
-        public async Task GetProductListAsync(string method)
+        //Refresh the list of products by performing a new GET request, if 'method' is an Id (formatted as string), get a product with the given Id, otherwise if 'method' is empty retrieve a list of all products
+        public async Task GetProductListAsync(string method, bool isSorted = false)
         {
-            DisableUI();
+            DisableUI(); // Disable UI to avoid spamming Get requests (and to force the user to wait for a product list before attempting other operations)
 
-            Form.ProductGrid.Rows.Clear(); //also clears productlist once bound
+            // Clear datastructures to ensure they all reflect the latest products obtained from the API
+            Form.ProductGrid.Rows.Clear(); //also clears ProductList once bound
             ProductNameDict.Clear();
             ProductIdDict.Clear();
 
             Task<HttpResponseMessage> GetResponse = client.GetAsync(method);
             string JsonProducts = "";
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
-            try
+            try 
             {
-                GetResponseResult = await GetResponse;
-                GetResponseResult.EnsureSuccessStatusCode();
-                JsonProducts = await GetResponseResult.Content.ReadAsStringAsync();
+                GetResponseResult = await GetResponse; // Async tasks may throw exceptions
+                GetResponseResult.EnsureSuccessStatusCode(); // Throws exception if status code is not success
+                JsonProducts = await GetResponseResult.Content.ReadAsStringAsync(); // Async tasks may throw exceptions
             }
-            catch
+            catch //Catch occurs if either the response status code is not successful, or the response content could not be read as string
             {
                 //response error 
 
@@ -56,7 +61,7 @@ namespace APIConsumer
                 {
                     MessageBox.Show("Id not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
+                else //response content could not be read as string or response has unspecified status code
                 {
                     MessageBox.Show("Unknown Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -64,9 +69,14 @@ namespace APIConsumer
                 JsonProducts = ""; //ensure string is empty to reflect the error
             }
 
-            if (JsonProducts != "")
+            if (JsonProducts != "") // Catch block did not execute, i.e. response status was successful and result could be read as string
             {
-                if (method.Length == 0) // get list of all products
+                if(isSorted)
+                {
+                    GetSortedResponse response = JsonConvert.DeserializeObject<GetSortedResponse>(JsonProducts);
+                    ProductList = response.Results;
+                }
+                else if (method.Length == 0) // get list of all products
                     ProductList = JsonConvert.DeserializeObject<List<Product>>(JsonProducts);
                 else // get one product
                     ProductList.Add(JsonConvert.DeserializeObject<Product>(JsonProducts));
@@ -84,6 +94,7 @@ namespace APIConsumer
             EnableUI();
         }
         
+        // Add new product
         public async Task PostAsync(Product addProduct)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
@@ -114,16 +125,17 @@ namespace APIConsumer
 
             if(GetResponseResult.IsSuccessStatusCode)
             {
-                MessageBox.Show("Product Added Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Product Added Successfully, retrieving updated list...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 AddProductToDatastructures(addProduct);
-                GetProductListAsync("");
+                GetProductListAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
             }
 
         }
 
+        // Delete product with specified Id (method) at rowIndex in DataGrid
         public async Task DeleteAsync(string method, int rowIndex)
         {
-            DisableUI();
+            //DisableUI();
 
             Task<HttpResponseMessage> GetResponse = client.DeleteAsync(method);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
@@ -152,9 +164,10 @@ namespace APIConsumer
                 DeleteProductFromDatastructures(rowIndex);
             }
 
-            EnableUI();
+            //EnableUI();
         }
 
+        // Update product based on addProduct, at specified rowIndex in DataGrid
         public async Task PutAsync(Product addProduct, int rowIndex)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");

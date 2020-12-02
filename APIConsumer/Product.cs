@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace APIConsumer
+﻿namespace APIConsumer
 {
     public enum ProductCategory
     {
@@ -11,6 +7,7 @@ namespace APIConsumer
         CategoryC,
     };
 
+    // Serializable Product Class with relevant properties
     public class Product
     {
         public int Id { get; set; }

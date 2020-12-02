@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
+
 
 namespace APIConsumer
 {
+    // Main form containing all functional buttons  
     public partial class APIConsumerForm : Form
     {
-        public Consumer consumer;
+        public Consumer consumer; // Reference required to call relevant communication functions
 
         public APIConsumerForm()
         {
@@ -21,12 +16,14 @@ namespace APIConsumer
             consumer.GetProductListAsync(""); // get list of all products on startup
         }
 
+        // Edit product of selected row
         private void EditButton_Click(object sender, EventArgs e)
         {
             EditForm editForm = new EditForm(this);
             editForm.ShowDialog();
         }
 
+        // Delete product of selected row
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in this.ProductGrid.SelectedRows)
@@ -38,22 +35,27 @@ namespace APIConsumer
             }
         }
 
+        // Get entire product list
         private void GetButton_Click(object sender, EventArgs e)
         {
             consumer.GetProductListAsync("");
         }
 
+        // Get sorted, filtered, ordered list
         private void GetSorted_Click(object sender, EventArgs e)
         {
-
+            GetSortedListForm sortedForm = new GetSortedListForm(this);
+            sortedForm.ShowDialog();
         }
 
+        // Add product
         private void AddButton_Click(object sender, EventArgs e)
         {
             AddProductForm addForm = new AddProductForm(this);
             addForm.ShowDialog();
         }
 
+        // Get product by Id
         private void GetIdButton_Click(object sender, EventArgs e)
         {
             GetIdForm getIdForm = new GetIdForm(this);

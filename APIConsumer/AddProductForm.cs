@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace APIConsumer
 {
+    // Form used to add a product
     public partial class AddProductForm : Form
     {
         protected APIConsumerForm parent;
@@ -40,7 +41,7 @@ namespace APIConsumer
             }
 
 
-            int category = CatCB.SelectedIndex + 1;
+            int category = CatCB.SelectedIndex + 1; // Combobox indexing starts at zero, but ProductCategory enum starts at 1, therefore increasea the selectedindex by one
             //if(!Enum.TryParse<ProductCategory>(CatCB.SelectedValue.ToString(), out category))
             if (!parent.consumer.validator.IsValidCategory(category))
             {
