@@ -14,7 +14,7 @@ namespace APIConsumer
             OrderByCB.SelectedIndex = 0;
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private async void OKButton_ClickAsync(object sender, EventArgs e)
         {
             int page;
             if(!int.TryParse(PageTB.Text, out page))
@@ -48,8 +48,11 @@ namespace APIConsumer
 
             string methodString = "?page=" + page.ToString() + "&pageSize=" + pageSize.ToString() + "&orderBy=" + OrderBy
                                     + "&ascending=" + (ascending ? "true" : "false") + "&filter=" + Filter;
-            
-            parent.consumer.GetAsync(methodString, true);
+
+            parent.ProductGrid.Rows.Clear(); 
+            await parent.consumer.GetAsync(methodString, true);
+            parent.BindSources(); 
+            parent.ProductGrid.Update();
             this.Dispose();
         }
     }

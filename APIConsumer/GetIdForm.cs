@@ -14,7 +14,7 @@ namespace APIConsumer
             this.parent = parent;
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private async void OKButton_ClickAsync(object sender, EventArgs e)
         {
             int id;
             if(int.TryParse(this.IdTextBox.Text, out id))
@@ -24,7 +24,10 @@ namespace APIConsumer
                     MessageBox.Show("Invalid Id", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                parent.consumer.GetAsync(id.ToString());
+                parent.ProductGrid.Rows.Clear();
+                await parent.consumer.GetAsync(id.ToString());
+                parent.BindSources(); //Bind products to grid
+                parent.ProductGrid.Update();
                 this.Dispose();
             }
             else
@@ -37,7 +40,7 @@ namespace APIConsumer
         {
             if (e.KeyChar == (char)Keys.Return)
             {
-                OKButton_Click(sender, e);
+                OKButton_ClickAsync(sender, e);
                 e.Handled = true;
             }
         }

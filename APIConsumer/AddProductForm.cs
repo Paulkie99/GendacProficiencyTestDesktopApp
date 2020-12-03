@@ -14,11 +14,11 @@ namespace APIConsumer
             InitializeComponent();
             this.parent = parent;
             this.IdTB.Enabled = false;
-            this.IdTB.Text = (parent.consumer.ProductIdDict.Keys.Max() + 1).ToString(); // Increment max Id by one to obtain new product Id
+            this.IdTB.Text = (parent.consumer.MaxId + 1).ToString(); // Increment max Id by one to obtain new product Id
             this.CatCB.SelectedIndex = 0; // Default is CategoryA
         }
 
-        protected virtual void OKButton_Click(object sender, EventArgs e)
+        protected virtual async void OKButton_ClickAsync(object sender, EventArgs e)
         {
             // Open Issue: should the user be allowed to specify Id?
             int id;
@@ -62,7 +62,9 @@ namespace APIConsumer
             }
 
             Product addProduct = new Product(id, name, (ProductCategory)category, price);
-            parent.consumer.PostAsync(addProduct);
+            await parent.consumer.PostAsync(addProduct);
+            if(parent.consumer.IsSuccess)
+                parent.BindGridToConsumerList();
             this.Dispose();
         }
     }

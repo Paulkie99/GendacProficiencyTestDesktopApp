@@ -42,7 +42,7 @@ namespace APIConsumer
             this.OKButton.TabIndex = 1;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
-            this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
+            this.OKButton.Click += new System.EventHandler(this.OKButton_ClickAsync);
             // 
             // IdTextBox
             // 

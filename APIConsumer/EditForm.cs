@@ -18,7 +18,7 @@ namespace APIConsumer
             this.CatCB.SelectedIndex = CatCB.FindStringExact(parent.ProductGrid.SelectedRows[0].Cells["Category"].Value.ToString());
             this.PriceTB.Text = parent.ProductGrid.SelectedRows[0].Cells["Price"].Value.ToString();
         }
-        protected override void OKButton_Click(object sender, EventArgs e)
+        protected override async void OKButton_ClickAsync(object sender, EventArgs e)
         {
             int id;
             if (!int.TryParse(IdTB.Text, out id))
@@ -61,7 +61,9 @@ namespace APIConsumer
             }
 
             Product addProduct = new Product(id, name, (ProductCategory)category, price);
-            parent.consumer.PutAsync(addProduct, this.parent.ProductGrid.SelectedRows[0].Index);
+            await parent.consumer.PutAsync(addProduct);
+            if (parent.consumer.IsSuccess)
+                parent.UpdateRow(this.parent.ProductGrid.SelectedRows[0].Index);
             this.Dispose();
         }
     }

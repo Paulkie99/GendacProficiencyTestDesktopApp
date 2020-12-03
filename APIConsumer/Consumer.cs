@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -18,7 +18,6 @@ namespace APIConsumer
         private HttpClient client = new HttpClient();
         private string endpoint = "http://gendacproficiencytest.azurewebsites.net/API/ProductsAPI/";
 
-        private APIConsumerForm Form; // The class requires a reference to the main form in order to manipulate the DataGridView
 
         public List<Product> ProductList = new List<Product>();
 
@@ -28,10 +27,13 @@ namespace APIConsumer
 
         public InputValidator validator;
 
-        public Consumer(APIConsumerForm form)
+        public int MaxId = 0;
+
+        public bool IsSuccess;
+
+        public Consumer()
         {
             validator = new InputValidator(this);
-            this.Form = form;
             client.BaseAddress = new Uri(endpoint);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Json-formatted responses and requests to be expected
         }
@@ -39,17 +41,11 @@ namespace APIConsumer
         //Refresh the list of products by performing a new GET request, if 'method' is an Id (formatted as string), get a product with the given Id, otherwise if 'method' is empty retrieve a list of all products
         public async Task GetAsync(string method, bool isSorted = false)
         {
+            IsSuccess = true; // return value to indicate whether the GET request was successful
+
             Logger.Info("GET " + endpoint + method);
 
-            DisableUI(); // Disable UI to avoid spamming Get requests (and to force the user to wait for a product list before attempting other operations)
-            Form.CountLabel.Text = "Retrieving...";
-
-            // Clear datastructures to ensure they all reflect the latest products obtained from the API
-            Form.ProductGrid.Rows.Clear(); //also clears ProductList once bound
-            ProductNameDict.Clear();
-            ProductIdDict.Clear();
-
-            Task<HttpResponseMessage> GetResponse = client.GetAsync(method);
+            Task<HttpResponseMessage> GetResponse = client.GetAsync(method); // Send GET
             string JsonProducts = "";
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
             try
@@ -72,10 +68,10 @@ namespace APIConsumer
                     MessageBox.Show("Unknown Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                JsonProducts = ""; //ensure string is empty to reflect the error
+                JsonProducts = ""; // reflect the error
             }
 
-            if (JsonProducts != "") // Catch block did not execute, i.e. response status was successful and result could be read as string
+            if (JsonProducts != "") // Catch block did not execute, i.e. response status was successful and result could be read as (non-empty) string
             {
                 try
                 {
@@ -85,7 +81,21 @@ namespace APIConsumer
                         ProductList = response.Results;
                     }
                     else if (method.Length == 0) // get list of all products
+                    {
                         ProductList = JsonConvert.DeserializeObject<List<Product>>(JsonProducts);
+
+                        // Clear datastructures to ensure they all reflect the latest changes obtained from the API
+                        ProductNameDict.Clear();
+                        ProductIdDict.Clear();
+
+                        foreach (Product product in ProductList)
+                        {
+                            ProductNameDict.Add(product.Name, product);
+                            ProductIdDict.Add(product.Id, product);
+                        }
+
+                        UpdateMaxId();
+                    }
                     else // get one product
                         ProductList.Add(JsonConvert.DeserializeObject<Product>(JsonProducts));
                 }
@@ -93,31 +103,24 @@ namespace APIConsumer
                 {
                     MessageBox.Show("Could not interpret API result", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Logger.Error(e, " Exception caught during deserialization of " + JsonProducts);
+                    IsSuccess = false;
                 }
-
-                foreach (Product product in ProductList)
-                {
-                    ProductNameDict.Add(product.Name, product);
-                    ProductIdDict.Add(product.Id, product);
-                }
-
-                //Bind products to grid
-                BindSources();
 
                 Logger.Info("GET " + endpoint + method + " executed successfully");
             }
-            else
+            else // either an exception was caught, or the string returned from ReadAsStringAsync was empty. In both cases an "Empty API result" message is appropriate, since the user will be presented with an empty list
             {
                 MessageBox.Show("Empty API result", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.Warn("JsonConverter could not parse GET result or exception occurred " + endpoint + method);
+                IsSuccess = false;
             }
-
-            EnableUI();
         }
         
         // Add new product
         public async Task PostAsync(Product addProduct)
         {
+            IsSuccess = true;
+
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
             
             Logger.Info("POST " + addProduct.ToString());
@@ -127,7 +130,7 @@ namespace APIConsumer
             try
             {
                 GetResponseResult = await GetResponse;
-                GetResponseResult.EnsureSuccessStatusCode();
+                GetResponseResult.EnsureSuccessStatusCode(); // throws exception if status code is not success
             }
             catch(Exception e)
             {
@@ -152,22 +155,25 @@ namespace APIConsumer
             {
                 Logger.Info("POST " + addProduct.ToString() + " completed successfully");
 
-                MessageBox.Show("Product added successfully, retrieving updated list...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                AddProductToDatastructures(addProduct);
+                MessageBox.Show("Product added successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //GetAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
                 // Open Issue: should the API be behaving in this way? Update: Id is now auto-generated instead of user-specified (see AddProductForm)
+
+                AddProductToDatastructures(addProduct);
             }
             else
             {
                 MessageBox.Show("Could not add product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.Warn("POST " + addProduct.ToString() + " response status code is not successful");
+                IsSuccess = false;
             }
-
         }
 
         // Delete product with specified Id (method) at rowIndex in DataGrid
-        public async Task DeleteAsync(string method, int rowIndex)
+        public async Task DeleteAsync(string method)
         {
+            IsSuccess = true;
+
             Logger.Info("DELETE " + method);
 
             Task<HttpResponseMessage> GetResponse = client.DeleteAsync(method);
@@ -196,18 +202,22 @@ namespace APIConsumer
             {
                 Logger.Info("DELETE " + method + " successful");
                 MessageBox.Show("Product Deleted Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DeleteProductFromDatastructures(rowIndex);
+
+                DeleteProductFromDatastructures(method);
             }
             else
             {
                 MessageBox.Show("Could not delete product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.Warn("DELETE " + method + " response status code is not successful");
+                IsSuccess = false;
             }
         }
 
         // Update product based on addProduct, at specified rowIndex in DataGrid
-        public async Task PutAsync(Product addProduct, int rowIndex)
+        public async Task PutAsync(Product addProduct)
         {
+            IsSuccess = true;
+
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
 
             Logger.Info("PUT " + addProduct.ToString());
@@ -246,61 +256,51 @@ namespace APIConsumer
             {
                 Logger.Info("PUT " + addProduct.ToString() + " successful");
                 MessageBox.Show("Product Edited Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                UpdateProductToDatastructures(rowIndex, addProduct);
+
+                UpdateProductInDatastructures(addProduct);
             }
             else
             {
                 MessageBox.Show("Could not edit product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.Warn("PUT " + addProduct.ToString() + " response status code is not successful");
+                IsSuccess = false;
             }
         }
 
-        private void UpdateProductToDatastructures(int gridIndex, Product addProduct)
+        // Delete a product from consumer dictionaries. Since the product list is bound to the APIConsumerForm's DataGrid, deleting the selected row from the APIConsumerForm class will remove the relevant Product from
+        // the Consumer's ProductList.
+        private void DeleteProductFromDatastructures(string id)
         {
-            DeleteProductFromDatastructures(gridIndex);
-            AddProductToDatastructures(addProduct, gridIndex);
+            int.TryParse(id, out int RemovedId);
+
+            ProductNameDict.Remove(ProductIdDict[RemovedId].Name);
+            ProductIdDict.Remove(RemovedId);
+
+            UpdateMaxId();
         }
 
-        private void DeleteProductFromDatastructures(int gridIndex)
-        {
-            ProductNameDict.Remove(Form.ProductGrid.Rows[gridIndex].Cells["Name"].Value.ToString());
-            ProductIdDict.Remove((int) Form.ProductGrid.Rows[gridIndex].Cells["Id"].Value);
-            Form.ProductGrid.Rows.RemoveAt(gridIndex);
-            Form.ProductGrid.Update();
-        }
-
-        private void BindSources()
-        {
-            //Bind grid to product list
-            Form.ProductGrid.AutoGenerateColumns = true;
-            var bindingList = new BindingList<Product>(ProductList);
-            var source = new BindingSource(bindingList, null);
-            Form.ProductGrid.DataSource = source;
-
-            //Bind count label to grid row count
-            Binding countBinding = new Binding("Text", new DataGridRowCountBindingHelper(Form.ProductGrid), "Count", true);
-            countBinding.Format += (sender, e) => e.Value = string.Format("{0} items", e.Value);
-            Form.CountLabel.DataBindings.Clear(); //avoid adding the same binding twice if the label text has been bound before
-            Form.CountLabel.DataBindings.Add(countBinding);
-        }
-
-
+        // Add a new product to the consumer dictionaries and product list
         private void AddProductToDatastructures(Product addProduct, int gridIndex = 0)
         {
             ProductList.Insert(gridIndex, addProduct);
-            Form.ProductGrid.DataSource = new BindingSource(new BindingList<Product>(ProductList), null);
             ProductNameDict.Add(addProduct.Name, addProduct);
             ProductIdDict.Add(addProduct.Id, addProduct);
+
+            UpdateMaxId();
         }
 
-        private void DisableUI()
+        // Both dictionaries and the product list should reference the same Product instances, changing one instance's properties will change all
+        private void UpdateProductInDatastructures(Product addProduct)
         {
-            Form.Enabled = false;
+            ProductIdDict[addProduct.Id].Name = addProduct.Name;
+            ProductIdDict[addProduct.Id].Category = addProduct.Category;
+            ProductIdDict[addProduct.Id].Price = addProduct.Price;
         }
 
-        private void EnableUI()
+        // Update the maximum known Id 
+        private void UpdateMaxId()
         {
-            Form.Enabled = true;
+            try { MaxId = ProductIdDict.Keys.Max(); } catch { MaxId = 0; }
         }
     }
 }

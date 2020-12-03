@@ -67,7 +67,7 @@ namespace APIConsumer
             this.DeleteButton.TabIndex = 9;
             this.DeleteButton.Text = "Delete";
             this.DeleteButton.UseVisualStyleBackColor = false;
-            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
+            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_ClickAsync);
             // 
             // EditButton
             // 
@@ -91,7 +91,7 @@ namespace APIConsumer
             this.GetButton.TabIndex = 5;
             this.GetButton.Text = "Get Product List";
             this.GetButton.UseVisualStyleBackColor = false;
-            this.GetButton.Click += new System.EventHandler(this.GetButton_Click);
+            this.GetButton.Click += new System.EventHandler(this.GetButton_ClickAsync);
             // 
             // GetSorted
             // 
@@ -192,6 +192,7 @@ namespace APIConsumer
             this.MinimumSize = new System.Drawing.Size(730, 400);
             this.Name = "APIConsumerForm";
             this.Text = "Gendac Software Engineering API Consumer";
+            this.Load += Init;
             ((System.ComponentModel.ISupportInitialize)(this.ProductGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
