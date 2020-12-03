@@ -33,9 +33,9 @@ namespace APIConsumer
             }
 
             string name = NameTB.Text;
-            if (!parent.consumer.validator.IsValidName(name)) // Open issue: should name be allowed to be non-unique when editing?
+            if (name.Length == 0) // Open issue: should name be allowed to be non-unique when editing?
             {
-                MessageBox.Show("Name is empty or already exists", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Name cannot be blank", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

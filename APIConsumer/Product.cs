@@ -22,5 +22,10 @@
             this.Category = Category;
             this.Price = Price;
         }
+
+        public override string ToString()
+        {
+            return "Id:" + Id.ToString() + " Name:" + Name + " Category:" + Category.ToString() + " Price:" + Price.ToString(); 
+        }
     }
 }

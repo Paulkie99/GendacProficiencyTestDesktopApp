@@ -42,12 +42,18 @@ namespace APIConsumer
                 return false;
 
             // Check if Name exists, if true, Name is invalid
+            return !IsNameExists(name);
+        }
+
+        // Check if given Name exists in Consumer dictionary
+        private bool IsNameExists(string name)
+        {
             Product product;
             parent.ProductNameDict.TryGetValue(name, out product);
             if (product != null)
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
 
         // Check if category is within ProductCategory enum

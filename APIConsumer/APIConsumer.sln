@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIConsumer", "APIConsumer.csproj", "{49ABB580-0648-46B6-91F1-499C9E5C5316}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIConsumer", "APIConsumer.csproj", "{49ABB580-0648-46B6-91F1-499C9E5C5316}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GendacAPIConsumerInstaller", "..\GendacAPIConsumerInstaller\GendacAPIConsumerInstaller.vdproj", "{EA66DD3D-242F-43CC-BA14-6376468C98CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,8 @@ Global
 		{49ABB580-0648-46B6-91F1-499C9E5C5316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49ABB580-0648-46B6-91F1-499C9E5C5316}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49ABB580-0648-46B6-91F1-499C9E5C5316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA66DD3D-242F-43CC-BA14-6376468C98CE}.Debug|Any CPU.ActiveCfg = Debug
+		{EA66DD3D-242F-43CC-BA14-6376468C98CE}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

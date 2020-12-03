@@ -19,6 +19,11 @@ namespace APIConsumer
             int id;
             if(int.TryParse(this.IdTextBox.Text, out id))
             {
+                if (id <= 0) // Open Issue: should Id of 0 be allowed?
+                {
+                    MessageBox.Show("Invalid Id", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 parent.consumer.GetAsync(id.ToString());
                 this.Dispose();
             }

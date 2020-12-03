@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace APIConsumer
@@ -12,10 +13,14 @@ namespace APIConsumer
         {
             InitializeComponent();
             this.parent = parent;
+            this.IdTB.Enabled = false;
+            this.IdTB.Text = (parent.consumer.ProductIdDict.Keys.Max() + 1).ToString(); // Increment max Id by one to obtain new product Id
+            this.CatCB.SelectedIndex = 0; // Default is CategoryA
         }
 
         protected virtual void OKButton_Click(object sender, EventArgs e)
         {
+            // Open Issue: should the user be allowed to specify Id?
             int id;
             if (!int.TryParse(IdTB.Text, out id))
             {

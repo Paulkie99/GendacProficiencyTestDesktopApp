@@ -19,14 +19,17 @@ namespace APIConsumer
         // Edit product of selected row
         private void EditButton_Click(object sender, EventArgs e)
         {
-            EditForm editForm = new EditForm(this);
-            editForm.ShowDialog();
+            if (ProductGrid.SelectedRows.Count == 1)
+            {
+                EditForm editForm = new EditForm(this);
+                editForm.ShowDialog();
+            }
         }
 
         // Delete product of selected row
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in this.ProductGrid.SelectedRows)
+            foreach (DataGridViewRow row in this.ProductGrid.SelectedRows) // for loop here will allow multiple rows to be deleted if multiple selections are allowed
             {
                 if (row.Index >= 0)
                 {
@@ -60,6 +63,12 @@ namespace APIConsumer
         {
             GetIdForm getIdForm = new GetIdForm(this);
             getIdForm.ShowDialog();
+        }
+
+        protected override void OnFormClosing(System.Windows.Forms.FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            NLog.LogManager.Shutdown();
         }
     }
 }

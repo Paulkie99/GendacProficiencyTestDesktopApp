@@ -42,6 +42,7 @@ namespace APIConsumer
             Logger.Info("GET " + endpoint + method);
 
             DisableUI(); // Disable UI to avoid spamming Get requests (and to force the user to wait for a product list before attempting other operations)
+            Form.CountLabel.Text = "Retrieving...";
 
             // Clear datastructures to ensure they all reflect the latest products obtained from the API
             Form.ProductGrid.Rows.Clear(); //also clears ProductList once bound
@@ -119,7 +120,7 @@ namespace APIConsumer
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
             
-            Logger.Info("POST " + content.ToString());
+            Logger.Info("POST " + addProduct.ToString());
          
             Task<HttpResponseMessage> GetResponse = client.PostAsync("", content);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
@@ -131,7 +132,7 @@ namespace APIConsumer
             catch(Exception e)
             {
                 //response error 
-                Logger.Error(e, "Exception caught in PostAsync function " + content.ToString());
+                Logger.Error(e, "Exception caught in PostAsync function " + addProduct.ToString());
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -149,17 +150,17 @@ namespace APIConsumer
 
             if(GetResponseResult.IsSuccessStatusCode)
             {
-                Logger.Info("POST " + content.ToString() + " completed successfully");
+                Logger.Info("POST " + addProduct.ToString() + " completed successfully");
 
                 MessageBox.Show("Product added successfully, retrieving updated list...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 AddProductToDatastructures(addProduct);
-                GetAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
-                // Open Issue: should the API be behaving in this way?
+                //GetAsync(""); // Necessary because the API seems to ignore requested Id and instead uses incremented largest Id, therefore the product list must be updated to ensure the DataGrid reflects the Id assigned by the API
+                // Open Issue: should the API be behaving in this way? Update: Id is now auto-generated instead of user-specified (see AddProductForm)
             }
             else
             {
                 MessageBox.Show("Could not add product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.Info("POST " + content.ToString() + " response status code is not successful");
+                Logger.Warn("POST " + addProduct.ToString() + " response status code is not successful");
             }
 
         }
@@ -200,7 +201,7 @@ namespace APIConsumer
             else
             {
                 MessageBox.Show("Could not delete product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.Info("DELETE " + method + " response status code is not successful");
+                Logger.Warn("DELETE " + method + " response status code is not successful");
             }
         }
 
@@ -209,7 +210,7 @@ namespace APIConsumer
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(addProduct), Encoding.UTF8, "application/json");
 
-            Logger.Info("PUT " + content.ToString());
+            Logger.Info("PUT " + addProduct.ToString());
 
             Task<HttpResponseMessage> GetResponse = client.PutAsync(addProduct.Id.ToString(), content);
             HttpResponseMessage GetResponseResult = new HttpResponseMessage();
@@ -221,7 +222,7 @@ namespace APIConsumer
             catch(Exception e)
             {
                 //response error 
-                Logger.Error(e, "Exception caught during PutAsync " + content.ToString());
+                Logger.Error(e, "Exception caught during PutAsync " + addProduct.ToString());
 
                 if (GetResponseResult.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -243,20 +244,21 @@ namespace APIConsumer
 
             if (GetResponseResult.IsSuccessStatusCode)
             {
+                Logger.Info("PUT " + addProduct.ToString() + " successful");
                 MessageBox.Show("Product Edited Successfully", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 UpdateProductToDatastructures(rowIndex, addProduct);
             }
             else
             {
                 MessageBox.Show("Could not edit product", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.Info("PUT " + content.ToString() + " response status code is not successful");
+                Logger.Warn("PUT " + addProduct.ToString() + " response status code is not successful");
             }
         }
 
         private void UpdateProductToDatastructures(int gridIndex, Product addProduct)
         {
             DeleteProductFromDatastructures(gridIndex);
-            AddProductToDatastructures(addProduct);
+            AddProductToDatastructures(addProduct, gridIndex);
         }
 
         private void DeleteProductFromDatastructures(int gridIndex)
@@ -283,9 +285,9 @@ namespace APIConsumer
         }
 
 
-        private void AddProductToDatastructures(Product addProduct)
+        private void AddProductToDatastructures(Product addProduct, int gridIndex = 0)
         {
-            ProductList.Add(addProduct);
+            ProductList.Insert(gridIndex, addProduct);
             Form.ProductGrid.DataSource = new BindingSource(new BindingList<Product>(ProductList), null);
             ProductNameDict.Add(addProduct.Name, addProduct);
             ProductIdDict.Add(addProduct.Id, addProduct);
