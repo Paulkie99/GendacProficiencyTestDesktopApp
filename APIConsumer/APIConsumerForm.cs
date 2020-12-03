@@ -24,11 +24,24 @@ namespace APIConsumer
                 EditForm editForm = new EditForm(this);
                 editForm.ShowDialog();
             }
+            else if(ProductGrid.SelectedRows.Count > 1)
+            {
+                MessageBox.Show("Only one product may be edited at a time", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else // None selected
+            {
+                MessageBox.Show("Please select a product to edit", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Delete product of selected row
         private void DeleteButton_Click(object sender, EventArgs e)
         {
+            if(this.ProductGrid.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a product to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             foreach (DataGridViewRow row in this.ProductGrid.SelectedRows) // for loop here will allow multiple rows to be deleted if multiple selections are allowed
             {
                 if (row.Index >= 0)
