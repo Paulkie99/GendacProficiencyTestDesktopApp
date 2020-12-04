@@ -18,6 +18,7 @@ namespace ConsumerTest
         public void OneTimeSetup()
         {
             consumer = new APIConsumer.Consumer();
+            consumer.boxHandler.ShowMessages = false;
         }
 
         [Test, Order(0)]
@@ -63,12 +64,14 @@ namespace ConsumerTest
             product = consumer.ProductList[0];
             Assert.True(product.Name == name &&
                         product.Category == APIConsumer.ProductCategory.CategoryB &&
-                        product.Price == 1000.01);
+                        product.Price == (float) 1000.01);
         }
 
         [Test, Order(4)]
         public async Task TestDeleteAsync()
         {
+            Assert.True(consumer.ProductList.Count == 1);
+
             int id = consumer.MaxId;
 
             var DeleteTask = consumer.DeleteAsync(id.ToString());
@@ -78,6 +81,8 @@ namespace ConsumerTest
             var GetTask = consumer.GetAsync(id.ToString());
             await GetTask;
             Assert.False(consumer.IsSuccess);
+
+            Assert.True(consumer.ProductList.Count == 0);
         }
     }
 }

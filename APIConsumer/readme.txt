@@ -1,5 +1,5 @@
 Author: Paul Johannes Claasen
-Last Update: 03/12/2020
+Last Update: 04/12/2020
 GitHub: https://github.com/Paulkie99/GendacProficiencyTestDesktopApp
 
 This program consumes the Web API hosted on http://gendacproficiencytest.azurewebsites.net/API/ProductsAPI/ by making use of the .NET Desktop Runtime Environment.
