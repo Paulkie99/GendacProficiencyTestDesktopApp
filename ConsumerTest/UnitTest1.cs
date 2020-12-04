@@ -1,13 +1,13 @@
 using NUnit.Framework;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Threading;
+using System;
 
 namespace ConsumerTest
 {
     public class Tests
     {
         private APIConsumer.Consumer consumer;
+        private string name;
 
         [SetUp]
         public void Setup()
@@ -30,7 +30,8 @@ namespace ConsumerTest
         [Test, Order(1)]
         public async Task TestPOSTAsync()
         {
-            APIConsumer.Product product = new APIConsumer.Product(consumer.MaxId + 1, " ", APIConsumer.ProductCategory.CategoryA, 1000); // This test executes after the GET test, so POST a product with an Id greater than the max in the database
+            name = DateTime.Now.ToString();
+            APIConsumer.Product product = new APIConsumer.Product(consumer.MaxId + 1, name, APIConsumer.ProductCategory.CategoryA, 1000); // This test executes after the GET test, so POST a product with an Id greater than the max in the database
             var PostTask = consumer.PostAsync(product);
             await PostTask;
             Assert.True(consumer.IsSuccess);
@@ -45,7 +46,7 @@ namespace ConsumerTest
             Assert.True(consumer.ProductList.Count == 1);
 
             APIConsumer.Product product = consumer.ProductList[0];
-            Assert.True(product.Name == " " &&
+            Assert.True(product.Name == name &&
                         product.Category == APIConsumer.ProductCategory.CategoryA &&
                         product.Price == 1000);
         }
@@ -53,13 +54,14 @@ namespace ConsumerTest
         [Test, Order(3)]
         public async Task TestPUTAsync() // Test that the added product can be edited
         {
-            APIConsumer.Product product = new APIConsumer.Product(consumer.MaxId, "Hello There", APIConsumer.ProductCategory.CategoryB, (float)1000.01);
+            name = DateTime.Now.ToString() + "1";
+            APIConsumer.Product product = new APIConsumer.Product(consumer.MaxId, name, APIConsumer.ProductCategory.CategoryB, (float)1000.01);
             var PutTask = consumer.PutAsync(product);
             await PutTask;
             Assert.True(consumer.IsSuccess);
 
             product = consumer.ProductList[0];
-            Assert.True(product.Name == "Hello There" &&
+            Assert.True(product.Name == name &&
                         product.Category == APIConsumer.ProductCategory.CategoryB &&
                         product.Price == 1000.01);
         }
@@ -72,7 +74,6 @@ namespace ConsumerTest
             var DeleteTask = consumer.DeleteAsync(id.ToString());
             await DeleteTask;
             Assert.True(consumer.IsSuccess);
-            Assert.True(consumer.ProductList.Count == 0);
 
             var GetTask = consumer.GetAsync(id.ToString());
             await GetTask;

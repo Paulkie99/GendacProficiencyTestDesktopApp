@@ -41,9 +41,11 @@ namespace APIConsumer
         //Refresh the list of products by performing a new GET request, if 'method' is an Id (formatted as string), get a product with the given Id, otherwise if 'method' is empty retrieve a list of all products
         public async Task GetAsync(string method, bool isSorted = false)
         {
+            Logger.Info("GET " + endpoint + method);
+
             IsSuccess = true; // return value to indicate whether the GET request was successful
 
-            Logger.Info("GET " + endpoint + method);
+            ProductList.Clear();
 
             Task<HttpResponseMessage> GetResponse = client.GetAsync(method); // Send GET
             string JsonProducts = "";
