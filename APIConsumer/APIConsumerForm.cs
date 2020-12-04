@@ -52,9 +52,11 @@ namespace APIConsumer
             {
                 if (row.Index >= 0)
                 {
+                    DisableUI(); // avoid more than one request at a time
                     await consumer.DeleteAsync(((int) row.Cells[0].Value).ToString());
                     if (consumer.IsSuccess)
                         RemoveRowFromGrid(row.Index);
+                    EnableUI();
                 }
             }
         }

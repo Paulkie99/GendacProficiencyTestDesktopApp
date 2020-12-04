@@ -25,9 +25,14 @@ namespace APIConsumer
                     return;
                 }
                 parent.ProductGrid.Rows.Clear();
+
+                Enabled = false; // avoid more than one request at a time
                 await parent.consumer.GetAsync(id.ToString());
+
                 parent.BindSources(); //Bind products to grid
                 parent.ProductGrid.Update();
+                
+                Enabled = true;
                 this.Dispose();
             }
             else

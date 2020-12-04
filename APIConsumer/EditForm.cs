@@ -61,9 +61,14 @@ namespace APIConsumer
             }
 
             Product addProduct = new Product(id, name, (ProductCategory)category, price);
+
+            Enabled = false; // avoid more than one request at a time
             await parent.consumer.PutAsync(addProduct);
+
             if (parent.consumer.IsSuccess)
                 parent.UpdateRow(this.parent.ProductGrid.SelectedRows[0].Index);
+            
+            Enabled = true;
             this.Dispose();
         }
     }

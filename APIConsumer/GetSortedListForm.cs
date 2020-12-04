@@ -49,10 +49,14 @@ namespace APIConsumer
             string methodString = "?page=" + page.ToString() + "&pageSize=" + pageSize.ToString() + "&orderBy=" + OrderBy
                                     + "&ascending=" + (ascending ? "true" : "false") + "&filter=" + Filter;
 
+
+            Enabled = false; // avoid more than one request at a time
             parent.ProductGrid.Rows.Clear(); 
             await parent.consumer.GetAsync(methodString, true);
             parent.BindSources(); 
             parent.ProductGrid.Update();
+
+            Enabled = true;
             this.Dispose();
         }
     }
